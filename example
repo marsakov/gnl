@@ -1,0 +1,9 @@
+We consider that get_next_line has an undefined behavior if, between two calls,
+the same file descriptor designs two distinct files although the reading from the first
+file was not completed.
+We consider also that a call to lseek(2) will never take place between two calls of
+the function get_next_line on the same file descriptor.
+Finally we consider that get_next_line has an undefined behavior when reading
+from a binary file. However, if you wish, you can make this behavior coherent.
+Global variables are forbidden.
+Static variables are allowed.

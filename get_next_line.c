@@ -112,6 +112,7 @@ static void	ft_zapominalka(int fd, char	*buf, t_list **temp, int counter)
 {
 	t_list	*elem;
 
+
 	if (*temp && (*temp)->fd == fd)
 	{
 		(*temp)->content = ft_strncpy((*temp)->content, buf, BUFF_SIZE);
@@ -123,7 +124,7 @@ static void	ft_zapominalka(int fd, char	*buf, t_list **temp, int counter)
 	{
 		if (!(elem = (t_list*)malloc(sizeof(t_list))))
 			return ;
-		elem = ft_lstnew(buf, BUFF_SIZE);
+		elem = ft_lstnew(buf, BUFF_SIZE + 1);
 		elem->fd = fd;
 		elem->i = counter;
 		printf("CREATE NEW ELEM IN LST: fd = %d, i = %d, content = %s\n", fd, counter, buf);
@@ -131,21 +132,28 @@ static void	ft_zapominalka(int fd, char	*buf, t_list **temp, int counter)
 	}
 }
 
-static int	ft_writer(char **line, int bytes, t_list **temp, int i)
+static int	ft_writer(char **line, int bytes, t_list **temp, int *i)
 {
-	while (i + (*temp)->i < BUFF_SIZE && (*temp)->content[i + (*temp)->i] != '\n')
+	while (*i + (*temp)->i < BUFF_SIZE && (*temp)->content[*i + (*temp)->i] != '\n')
 	{
-		(*line)[i] = (char)malloc(sizeof(char));
-		(*line)[i] = (*temp)->content[i + (*temp)->i];
-		i++;
+		printf("content[%d] = %c\n", *i + (*temp)->i, (*temp)->content[*i + (*temp)->i]);
+		(*line)[*i] = (char)malloc(sizeof(char));
+		(*line)[*i] = (*temp)->content[*i + (*temp)->i];
+		(*i)++;
 	}
-	(*line)[i] = 0;
-	if ((*temp)->content[i + (*temp)->i] == '\n')
+	(*line)[*i] = 0;
+	printf("\nZAKONCHIL ZAPIS | counter = %d\n\n", *i + (*temp)->i);
+	printf("poslednii simvol: (%c)\n", (*temp)->content[*i + (*temp)->i]);
+	if ((*temp)->content[*i + (*temp)->i] == '\n')
+	{
+		printf("writer: VERNU 1\n");
 		return (1);
+	}
+	printf("\nVERNU 0\n\n");
 	printf("%d\n", (*temp)->i);
-	(*temp)->i += i;
+	(*temp)->i += *i;
 	printf("%d\n", (*temp)->i);
-	return ((*temp)->i);
+	return (0);
 }
 
 
@@ -156,6 +164,7 @@ int		get_next_line(const int fd, char **line)
 	static t_list	*lst = NULL;
 	t_list			*temp;
 	int				wrtr;
+	int				count;
 
 	t_list			*temp_print = lst;
 	int				i = 0;
@@ -179,6 +188,7 @@ int		get_next_line(const int fd, char **line)
 	temp = ft_check(fd, lst);
 	bytes = 1;
 	wrtr = 0;
+	count = 0;
 	while (wrtr != 1)
 	{
 		if (!temp || temp->i == BUFF_SIZE - 1)
@@ -191,9 +201,11 @@ int		get_next_line(const int fd, char **line)
 				return (0);
 			//printf("||||||||||||BUF||||||||||||\n%s\n||||||||||||||||||||||||\n", buf);
 			ft_zapominalka(fd, buf, &temp, 0);
-			lst = temp;
+			count = 0;
+			if (!temp)
+				lst = temp;
 		}
-		wrtr = ft_writer(line, bytes, &temp, wrtr);
+		wrtr = ft_writer(line, bytes, &temp, &count);
 	}
 	// if (bytes == -1)
 	// 	return (-1);

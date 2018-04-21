@@ -52,14 +52,14 @@ int main(int argc, char const *argv[])
 	if (argc == 2)
 	{
 		fd = open(argv[1], O_RDONLY);
-		get_next_line(fd, &str);
-		// while (i < 11 && get_next_line(fd, &str) == 1)
-		// {
-		// 	printf("`````````````````````````````STR %d`````````````````````````````\n", i);
-		// 	printf("%s\n", str);
-		// 	printf("````````````````````````````````````````````````````````````````\n");
-		// 	i++;
-		// }
+		//get_next_line(fd, &str);
+		while (i < 11 && get_next_line(fd, &str) == 1)
+		{
+			printf("`````````````````````````````STR %d`````````````````````````````\n", i);
+			printf("%s\n", str);
+			printf("````````````````````````````````````````````````````````````````\n");
+			i++;
+		}
 	}
 	return (0);
 }

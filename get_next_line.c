@@ -136,23 +136,27 @@ static int	ft_writer(char **line, int bytes, t_list **temp, int *i)
 {
 	while (*i + (*temp)->i < BUFF_SIZE && (*temp)->content[*i + (*temp)->i] != '\n')
 	{
-		printf("content[%d] = %c\n", *i + (*temp)->i, (*temp)->content[*i + (*temp)->i]);
+		//printf("content[%d] = %c\n", *i + (*temp)->i, (*temp)->content[*i + (*temp)->i]);
 		(*line)[*i] = (char)malloc(sizeof(char));
 		(*line)[*i] = (*temp)->content[*i + (*temp)->i];
 		(*i)++;
 	}
+	//printf("%d\n", *i);
 	(*line)[*i] = 0;
-	printf("\nZAKONCHIL ZAPIS | counter = %d\n\n", *i + (*temp)->i);
-	printf("poslednii simvol: (%c)\n", (*temp)->content[*i + (*temp)->i]);
-	if ((*temp)->content[*i + (*temp)->i] == '\n')
+	//printf("%d\n", (*temp)->i);
+	(*temp)->i += *i;
+	//printf("%d\n", (*temp)->i);
+	//printf("BUF = %s\n", (*temp)->content);
+	//printf("\nZAKONCHIL ZAPIS | counter = %d\n\n", *i + (*temp)->i);
+	//printf("poslednii simvol: (%c)\n", (*temp)->content[*i + (*temp)->i]);
+	if ((*temp)->content[(*temp)->i] == '\n')
 	{
-		printf("writer: VERNU 1\n");
+		//printf("writer: VERNU 1\n");
 		return (1);
 	}
-	printf("\nVERNU 0\n\n");
-	printf("%d\n", (*temp)->i);
-	(*temp)->i += *i;
-	printf("%d\n", (*temp)->i);
+	//printf("\nVERNU 0\n\n");
+	//printf("%d\n", (*temp)->i);
+	//printf("%d\n", (*temp)->i);
 	return (0);
 }
 
@@ -193,6 +197,7 @@ int		get_next_line(const int fd, char **line)
 	{
 		if (!temp || temp->i == BUFF_SIZE - 1)
 		{
+			printf("IF\n");
 			buf[BUFF_SIZE] = 0;
 			bytes = read(fd, buf, BUFF_SIZE);
 			if (bytes == -1)
@@ -202,8 +207,20 @@ int		get_next_line(const int fd, char **line)
 			//printf("||||||||||||BUF||||||||||||\n%s\n||||||||||||||||||||||||\n", buf);
 			ft_zapominalka(fd, buf, &temp, 0);
 			count = 0;
-			if (!temp)
-				lst = temp;
+			if (!lst)
+			{
+				printf("!TEMP: \n");
+				ft_lstadd(&lst, temp);
+				//lst = temp;
+				printf("|||||||||||| LST ||||||||||||\n");
+				while (temp_print)
+				{
+					printf("            i = %d\n%s\n", i, temp_print->content);
+					temp_print = temp_print->next;
+				}
+				printf("|||||||||||||||||||||||||||||\n");
+
+			}
 		}
 		wrtr = ft_writer(line, bytes, &temp, &count);
 	}

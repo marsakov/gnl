@@ -11,87 +11,6 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-// # include <fcntl.h>
-// # include <sys/stat.h>
-// # include <sys/types.h>
-
-static void	*ft_memset(void *b, int c, size_t len)
-{
-	unsigned char *temp;
-
-	temp = (unsigned char *)b;
-	while (len-- > 0)
-		*temp++ = (unsigned char)c;
-	return (b);
-}
-
-static void	ft_bzero(void *s, size_t n)
-{
-	ft_memset(s, 0, n);
-}
-
-static void	*ft_memcpy(void *dst, const void *src, size_t n)
-{
-	char	*temp1;
-	char	*temp2;
-
-	temp1 = (char *)dst;
-	temp2 = (char *)src;
-	while (n--)
-		*temp1++ = *temp2++;
-	return (dst);
-}
-
-static void	ft_lstadd(t_list **alst, t_list *new)
-{
-	if (new)
-	{
-		new->next = *alst;
-		*alst = new;
-	}
-}
-
-static t_list	*ft_lstnew(void const *content, size_t content_size)
-{
-	t_list *list;
-
-	list = (t_list *)malloc(sizeof(t_list));
-	if (!list)
-		return (NULL);
-	if (!content)
-	{
-		list->content = NULL;
-		list->content_size = 0;
-	}
-	else
-	{
-		list->content = (void *)malloc(content_size);
-		if (!list->content)
-			return (NULL);
-		ft_memcpy(list->content, content, content_size);
-		list->content_size = content_size;
-	}
-	list->next = NULL;
-	return (list);
-}
-
-static char	*ft_strncpy(char *dst, const char *src, size_t n)
-{
-	char	*begin;
-
-	begin = dst;
-	while (n && *src)
-	{
-		*dst++ = *src++;
-		--n;
-	}
-	while (n)
-	{
-		*dst++ = '\0';
-		n--;
-	}
-	return (begin);
-}
 
 static t_list *ft_check(int fd, t_list *lst)
 {
@@ -100,7 +19,6 @@ static t_list *ft_check(int fd, t_list *lst)
 	temp = lst;
 	while (temp)
 	{
-		//printf("--------temp-------\n%s\n-------------------\n", lst->content);
 		if (temp->fd == fd)
 			return (temp);
 		temp = temp->next;
@@ -108,17 +26,21 @@ static t_list *ft_check(int fd, t_list *lst)
 	return (NULL);
 }
 
-static void	ft_zapominalka(int fd, char	*buf, t_list **temp, int counter)
+static void	ft_zapominalka(int fd, char	*buf, t_list **lst, int counter)
 {
 	t_list	*elem;
+	t_list	*temp;
 
+<<<<<<< HEAD
+	temp = ft_check(fd, *lst);
+	if (temp && temp->fd == fd)
+=======
 
 	if (*temp && (*temp)->fd == fd)
+>>>>>>> 3e70d45b5d30f9553ecc4bd8fa7b0e4116fa88a2
 	{
-		(*temp)->content = ft_strncpy((*temp)->content, buf, BUFF_SIZE);
-		printf("MENYAU BUF: %s\n", (*temp)->content);	
-		(*temp)->i = counter;
-		printf("NACHINAU TYT: %s\n", ((*temp)->content + (*temp)->i));
+		temp->content = ft_strncpy(temp->content, buf, BUFF_SIZE);
+		temp->i = counter;
 	}
 	else
 	{
@@ -127,11 +49,37 @@ static void	ft_zapominalka(int fd, char	*buf, t_list **temp, int counter)
 		elem = ft_lstnew(buf, BUFF_SIZE + 1);
 		elem->fd = fd;
 		elem->i = counter;
-		printf("CREATE NEW ELEM IN LST: fd = %d, i = %d, content = %s\n", fd, counter, buf);
-		ft_lstadd(temp, elem);
+		ft_lstadd(lst, elem);
 	}
 }
 
+<<<<<<< HEAD
+static int	ft_writer(char **line, t_list **temp)
+{
+	int i;
+	int tmp;
+	char *p;
+
+	i = 0;
+	p = *line;
+	tmp = (*temp)->i;
+	while ((*temp)->i < BUFF_SIZE && (*temp)->content[(*temp)->i] != '\n' && (*temp)->content[(*temp)->i] != 0)
+	{
+		(*temp)->i++;
+		i++;
+	}
+	*line = ft_strnjoin(*line, ((*temp)->content + tmp), i);
+	if (p && *p)
+		free(p);
+	if ((*temp)->i != BUFF_SIZE)
+	{
+		if ((*temp)->content[(*temp)->i] == 0)
+			(*temp)->i = BUFF_SIZE;
+		else if ((*temp)->content[(*temp)->i] == '\n')
+			(*temp)->i++;
+		return (1);
+	}
+=======
 static int	ft_writer(char **line, int bytes, t_list **temp, int *i)
 {
 	while (*i + (*temp)->i < BUFF_SIZE && (*temp)->content[*i + (*temp)->i] != '\n')
@@ -157,9 +105,9 @@ static int	ft_writer(char **line, int bytes, t_list **temp, int *i)
 	//printf("\nVERNU 0\n\n");
 	//printf("%d\n", (*temp)->i);
 	//printf("%d\n", (*temp)->i);
+>>>>>>> 3e70d45b5d30f9553ecc4bd8fa7b0e4116fa88a2
 	return (0);
 }
-
 
 int		get_next_line(const int fd, char **line)
 {
@@ -168,42 +116,49 @@ int		get_next_line(const int fd, char **line)
 	static t_list	*lst = NULL;
 	t_list			*temp;
 	int				wrtr;
+<<<<<<< HEAD
+	int				i;
+=======
 	int				count;
+>>>>>>> 3e70d45b5d30f9553ecc4bd8fa7b0e4116fa88a2
 
-	t_list			*temp_print = lst;
-	int				i = 0;
-
-	// if (!lst)
-	// {
-	// 	if (!(lst = (t_list*)malloc(sizeof(t_list))))
-	// 		return (0);
-	// 	lst->content = NULL;
-	// }
-
-	// printf("|||||||||||| LST ||||||||||||\n");
-	// while (temp_print)
-	// {
-	// 	printf("            i = %d\n%s\n", i, temp_print->content);
-	// 	i++;
-	// 	temp_print = temp_print->next;
-	// }
-	// printf("|||||||||||||||||||||||||||||\n");
-
+	i = 0;
 	temp = ft_check(fd, lst);
-	bytes = 1;
+	if (line && *line)
+		ft_bzero(*line, ft_strlen(*line));
 	wrtr = 0;
+<<<<<<< HEAD
+	while (wrtr == 0)
+=======
 	count = 0;
 	while (wrtr != 1)
+>>>>>>> 3e70d45b5d30f9553ecc4bd8fa7b0e4116fa88a2
 	{
-		if (!temp || temp->i == BUFF_SIZE - 1)
+		if (!temp || temp->i >= BUFF_SIZE)
 		{
+<<<<<<< HEAD
+=======
 			printf("IF\n");
 			buf[BUFF_SIZE] = 0;
+>>>>>>> 3e70d45b5d30f9553ecc4bd8fa7b0e4116fa88a2
 			bytes = read(fd, buf, BUFF_SIZE);
+			buf[bytes] = 0;
 			if (bytes == -1)
 				return (-1);
 			if (bytes == 0)
+			{
+				if (i)
+					return (1);
 				return (0);
+<<<<<<< HEAD
+			}
+			ft_zapominalka(fd, buf, &lst, 0);
+			if (!temp)
+				temp = lst;
+		}
+		wrtr = ft_writer(line, &temp);
+		i++;
+=======
 			//printf("||||||||||||BUF||||||||||||\n%s\n||||||||||||||||||||||||\n", buf);
 			ft_zapominalka(fd, buf, &temp, 0);
 			count = 0;
@@ -223,10 +178,8 @@ int		get_next_line(const int fd, char **line)
 			}
 		}
 		wrtr = ft_writer(line, bytes, &temp, &count);
+>>>>>>> 3e70d45b5d30f9553ecc4bd8fa7b0e4116fa88a2
 	}
-	// if (bytes == -1)
-	// 	return (-1);
-	// if (bytes == 0)
-	// 	return (0);
 	return (1);
 }
+ 

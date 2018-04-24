@@ -16,18 +16,19 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include "libft/libft.h"
 //# include <fcntl.h>
 
-# define BUFF_SIZE 90
+# define BUFF_SIZE 1
 
-typedef struct		s_list
-{
-	int				fd;
-	int				i;
-	int				content_size;
-	char			*content;
-	struct s_list	*next;	
-} 					t_list;
+// typedef struct		s_list
+// {
+// 	int				fd;
+// 	int				i;
+// 	int				content_size;
+// 	char			*content;
+// 	struct s_list	*next;	
+// } 					t_list;
 
 int					get_next_line(const int fd, char **line);
 

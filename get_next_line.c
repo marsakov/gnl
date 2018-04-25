@@ -39,10 +39,7 @@ static void	ft_zapominalka(int fd, char	*buf, t_list **lst, int counter)
 	}
 	else
 	{
-		if (!(elem = (t_gnl_list*)malloc(sizeof(t_gnl_list))))
-			return (0);
-		if (!(elem->content = (void *)malloc(BUFF_SIZE)))
-			return (0);
+		elem = ft_lstnew(buf, BUFF_SIZE + 1);
 		elem->fd = fd;
 		elem->i = counter;
 		ft_lstadd(lst, elem);

@@ -12,9 +12,9 @@
 
 #include "get_next_line.h"
 
-static t_list *ft_check(int fd, t_list *lst)
+static t_gnl_list *ft_check(int fd, t_gnl_list *lst)
 {
-	t_list *temp;
+	t_gnl_list *temp;
 
 	temp = lst;
 	while (temp)
@@ -26,10 +26,10 @@ static t_list *ft_check(int fd, t_list *lst)
 	return (NULL);
 }
 
-static void	ft_zapominalka(int fd, char	*buf, t_list **lst, int counter)
+static void	ft_zapominalka(int fd, char	*buf, t_gnl_list **lst, int counter)
 {
-	t_list	*elem;
-	t_list	*temp;
+	t_gnl_list	*elem;
+	t_gnl_list	*temp;
 
 	temp = ft_check(fd, *lst);
 	if (temp && temp->fd == fd)
@@ -39,17 +39,14 @@ static void	ft_zapominalka(int fd, char	*buf, t_list **lst, int counter)
 	}
 	else
 	{
-		if (!(elem = (t_gnl_list*)malloc(sizeof(t_gnl_list))))
-			return (0);
-		if (!(elem->content = (void *)malloc(BUFF_SIZE)))
-			return (0);
+		elem = ft_lstnew(buf, BUFF_SIZE + 1);
 		elem->fd = fd;
 		elem->i = counter;
 		ft_lstadd(lst, elem);
 	}
 }
 
-static int	ft_writer(char **line, t_list **temp)
+static int	ft_writer(char **line, t_gnl_list **temp)
 {
 	int i;
 	int tmp;
@@ -79,12 +76,12 @@ static int	ft_writer(char **line, t_list **temp)
 
 int		get_next_line(const int fd, char **line)
 {
-	char			*buf;
-	int				bytes;
-	static t_list	*lst = NULL;
-	t_list			*temp;
-	int				wrtr;
-	int				i;
+	char				*buf;
+	int					bytes;
+	static t_gnl_list	*lst = NULL;
+	t_gnl_list			*temp;
+	int					wrtr;
+	int					i;
 
 	i = 0;
 	if (!(buf = (char*)malloc(sizeof(char) * (BUFF_SIZE + 1))))

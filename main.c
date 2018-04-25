@@ -17,72 +17,56 @@
 #include <stdio.h>
 
 
-int main(int argc, char const *argv[])
-{
-	int fd;
-	int i;
-	int a;
-	char *str;
-	int bytes;
-
-	i = 0;
-	str = (char *)malloc(sizeof(char) * 651);
-	//str = NULL;
-	if (argc == 2)
-	{
-		fd = open(argv[1], O_RDONLY);
-<<<<<<< HEAD
-		while ((a = get_next_line(fd, &str)) > 0)
-=======
-		//get_next_line(fd, &str);
-		while (i < 11 && get_next_line(fd, &str) == 1)
->>>>>>> 3e70d45b5d30f9553ecc4bd8fa7b0e4116fa88a2
-		{
-			printf("`````````````````````````````STR %d`````````````````````````````\n", i);
-			printf("%d : %s\n", a, str);
-			printf("````````````````````````````````````````````````````````````````\n");
-			i++;
-		}
-		a = get_next_line(fd, &str);
-		printf("%d %s\n", a, str);
-	}
-	return (0);
-}
-
-// int				main(void)
+// int main(int argc, char const *argv[])
 // {
-// 	char		*line;
-// 	int			fd;
-// 	int			ret;
-// 	int			count_lines;
-// 	char		*filename;
-// 	int			errors;
+// 	int fd;
+// 	int i;
+// 	int a;
+// 	char *str;
+// 	int bytes;
 
-// 	filename = "gnl1_1.txt";
-// 	fd = open(filename, O_RDONLY);
-// 	if (fd > 2)
+// 	i = 0;
+// 	//str = (char *)malloc(sizeof(char) * 651);
+// 	str = NULL;
+// 	if (argc == 2)
 // 	{
-// 		count_lines = 0;
-// 		errors = 0;
-// 		line = (char *)malloc(sizeof(char) * 100);
-// 		while ((ret = get_next_line(fd, &line)) > 0)
+// 		fd = open(argv[1], O_RDONLY);
+// 		while ((a = get_next_line(fd, &str)) > 0)
 // 		{
-// 			printf("vse ok\n");
-// 			if (count_lines == 0 && strcmp(line, "1234567") != 0)
-// 				errors++;
-// 			count_lines++;
-// 			if (count_lines > 50)
-// 				break;
+// 			printf("`````````````````````````````STR %d`````````````````````````````\n", i);
+// 			printf("%d : %s\n", a, str);
+// 			printf("````````````````````````````````````````````````````````````````\n");
+// 			i++;
 // 		}
-// 		close(fd);
-// 		if (count_lines != 1)
-// 			printf("-> must have returned '1' once instead of %d time(s)\n", count_lines);
-// 		if (errors > 0)
-// 			printf("-> must have read \"1234567\" instead of \"%s\"\n", line);
-// 		if (count_lines == 1 && errors == 0)
-// 			printf("OK\n");
+// 		a = get_next_line(fd, &str);
+// 		printf("%d %s\n", a, str);
 // 	}
-// 	else
-// 		printf("An error occured while opening file %s\n", filename);
 // 	return (0);
 // }
+
+int				main(void)
+{
+	char 	*line;
+	int		out;
+	int		p[2];
+	char 	*str;
+	int		gnl_ret;
+
+	str = (char *)malloc(1000 * 1000);
+	*str = '\0';
+	strcat(str, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in leo dignissim, gravida leo id, imperdiet urna. Aliquam magna nunc, maximus quis eleifend et, scelerisque non dolor. Suspendisse augue augue, tempus");
+	strcat(str, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in leo dignissim, gravida leo id, imperdiet urna. Aliquam magna nunc, maximus quis eleifend et, scelerisque non dolor. Suspendisse augue augue, tempus");
+	strcat(str, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in leo dignissim, gravida leo id, imperdiet urna. Aliquam magna nunc, maximus quis eleifend et, scelerisque non dolor. Suspendisse augue augue, tempus");
+	out = dup(1);
+	pipe(p);
+	dup2(p[1], 1);
+	printf("%s\n", str);
+	write(1, str, strlen(str));
+	close(p[1]);
+	dup2(out, 1);
+	gnl_ret = get_next_line(p[0], &line);
+	printf("%d : %s\n", gnl_ret, line);
+}
+
+
+//	printf("%d : %s\n", gnl_ret, line);

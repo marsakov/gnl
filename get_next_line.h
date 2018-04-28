@@ -13,23 +13,21 @@
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include "libft/libft.h"
+# include "libft/includes/libft.h"
 # include <fcntl.h>
 
 # define BUFF_SIZE 32
 
-typedef struct			s_gnl_list
+typedef struct			s_gnl
 {
 	int					fd;
 	int					i;
-	int					content_size;
-	char				*content;
-	struct s_gnl_list	*next;	
-} 						t_gnl_list;
+	char				content[BUFF_SIZE + 1];
+	struct s_gnl		*next;
+}						t_gnl;
 
-int					get_next_line(const int fd, char **line);
+int						get_next_line(const int fd, char **line);
 
 #endif

@@ -75,11 +75,10 @@ static int		ft_writer(char **line, t_gnl *temp, int i)
 
 int				ft_reader(int fd, int i, t_gnl **temp, t_gnl **lst)
 {
-	char			buf[BUFF_SIZE];
+	char			buf[BUFF_SIZE + 1];
 	int				bytes;
 
 	bytes = read(fd, buf, BUFF_SIZE);
-	buf[bytes] = 0;
 	if (bytes == -1)
 		return (-1);
 	if (bytes == 0)
@@ -88,10 +87,11 @@ int				ft_reader(int fd, int i, t_gnl **temp, t_gnl **lst)
 			return (1);
 		return (0);
 	}
+	buf[bytes] = 0;
 	ft_zapominalka(fd, buf, lst, 0);
 	if (!*temp)
 		*temp = *lst;
-	return (3);
+	return (5);
 }
 
 int				get_next_line(const int fd, char **line)
